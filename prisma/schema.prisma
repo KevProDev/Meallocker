@@ -1,0 +1,162 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  // previewFeatures = ["dataProxy"]
+  // update Database 
+  previewFeatures = ["referentialIntegrity", "dataProxy"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  //update Database 
+  referentialIntegrity = "prisma"
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             Int
+  type               String
+  provider           String
+  providerAccountId  String?
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+  oauth_token_secret String?
+  oauth_token        String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       Int
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model User {
+  id            Int    @id @default(autoincrement())
+  name          String?   @unique
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  accounts      Account[]
+  sessions      Session[]
+  users_meals_review   Meal[]
+  fav_meal        Favorite_Meal[]
+  restaurant        Restaurant[]
+  followers     Follower[]
+  following     Following[]
+  likes         Like[]
+
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Meal {
+  id            Int    @id @default(autoincrement())
+  title         String      @db.VarChar(200)
+  description   String      @db.VarChar(500)
+  like_count    Int?        @default(0)
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+  user_name     String
+  user_image    String?   
+  rest_name     String?              
+  user_id       Int
+  user          User        @relation(fields: [user_id], references:[id])
+  rest_id       String      
+  rest          Restaurant  @relation(fields: [rest_id], references:[rest_id])
+  // fav_meal      Favorite_Meal[]
+
+  @@index([rest_id,user_id])
+
+}
+
+model Restaurant {
+  id            Int        @id @default(autoincrement())
+  rest_id       String     @unique
+  name          String?    @db.VarChar(255)
+  address       String?    @db.VarChar(200)
+  city          String?    @db.VarChar(45)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  users_meals_review   Meal[]
+  user          User[]
+
+  @@index([rest_id])
+}
+
+model Profile {
+  id            Int    @id @default(autoincrement())
+  user_id       Int    @unique
+
+  
+  @@index([user_id])
+
+}
+
+model Favorite_Meal {
+  id                  Int        @id @default(autoincrement())
+  meal_id             Int   
+  user_id          Int
+  profile             User @relation(fields: [user_id], references: [id])
+  created_at          DateTime  @default(now())
+  updated_at          DateTime  @updatedAt
+  @@index([user_id])
+}
+
+model Following {
+  id           Int        @id @default(autoincrement())
+  following_to_id      Int       
+  following            User @relation(fields: [following_to_id],references: [id])
+  user_id             Int
+
+
+   
+  created_at          DateTime  @default(now())
+  updated_at          DateTime  @updatedAt
+
+}
+
+model Follower {
+  id                  Int        @id @default(autoincrement())  
+  follower_to_id     Int        
+  followers           User @relation(fields: [follower_to_id],references: [id])
+  user_id             Int
+
+   
+  created_at          DateTime  @default(now())
+  updated_at          DateTime  @updatedAt
+
+}
+
+model Like {
+  id                  Int        @id @default(autoincrement())
+  created_at          DateTime  @default(now())
+  updated_at          DateTime  @updatedAt
+
+  user           User @relation(fields: [user_id],references: [id])
+
+  user_id             Int
+  meal_id             Int
+}

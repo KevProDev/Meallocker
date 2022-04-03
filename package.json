@@ -1,0 +1,45 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "vercel-build": " PRISMA_CLIENT_ENGINE_TYPE=\"dataproxy\" prisma generate && next build",
+    "migrate": "DATABASE_URL=\"$MIGRATE_DATABASE_URL\" prisma db push"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.4.2",
+    "@heroicons/react": "^1.0.5",
+    "@next-auth/prisma-adapter": "^1.0.3",
+    "@prisma/client": "^3.11.1",
+    "@reduxjs/toolkit": "^1.6.2",
+    "formik": "^2.2.9",
+    "next": "12.0.7",
+    "next-auth": "^4.3.1",
+    "next-connect": "^0.11.0",
+    "nodemailer": "^6.7.2",
+    "nookies": "^2.5.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-loading-skeleton": "^3.0.1",
+    "react-query": "^3.34.5",
+    "react-scroll": "^1.8.4",
+    "swr": "^1.1.1",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "@babel/plugin-syntax-jsx": "^7.16.7",
+    "@types/node": "^17.0.21",
+    "@types/react": "^17.0.39",
+    "@typescript-eslint/eslint-plugin": "^5.15.0",
+    "autoprefixer": "^10.2.6",
+    "eslint": "8.9.0",
+    "eslint-config-next": "^12.1.0",
+    "eslint-config-prettier": "^8.5.0",
+    "postcss": "^8.3.5",
+    "prettier": "^2.5.1",
+    "prisma": "^3.6.0",
+    "tailwindcss": "^2.2.4",
+    "typescript": "^4.6.2"
+  }
+}
